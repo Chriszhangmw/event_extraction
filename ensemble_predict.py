@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: ensemble_predict.py
-@time: 2020/9/18 20:04
-"""
+
 import os
 import copy
 import json
@@ -19,7 +11,7 @@ from src_final.preprocess.processor import fine_grade_tokenize
 from src_final.utils.functions_utils import get_model_path_list, prepare_info
 from src_final.utils.model_utils import AttributionClassifier
 
-logger = logging.getLogger(__name__)
+
 
 # 全局常量
 ERNIE_BERT_DIR = '../bert/torch_ernie_1'
@@ -95,7 +87,6 @@ def ensemble_attribution(version):
     """
     将 attribution 用百度 ERNIE 模型交叉验证
     """
-    logger.info('Ensemble attribution')
     info_dict = prepare_info(task_type='attribution', mid_data_dir=MID_DATA_DIR)
 
     polarity2id = info_dict['polarity2id']
@@ -124,7 +115,6 @@ def ensemble_attribution(version):
     with torch.no_grad():
 
         for idx, _model_path in enumerate(ernie_models_path):
-            logger.info(f'Load ckpt from {_model_path}')
             ernie_model.load_state_dict(torch.load(_model_path, map_location=torch.device('cpu')))
             ernie_model.eval()
             ernie_model.to(device)
@@ -154,9 +144,7 @@ def ensemble_attribution(version):
             tmp_polarity = id2polarity[polarity[idx]]
             tmp_tense = id2tense[tense[idx]]
             idx += 1
-
             _event['polarity'] = tmp_polarity
             _event['tense'] = tmp_tense
-
     with open(os.path.join(SUBMIT_DIR, f'submit_{version}_ensemble.json'), 'w', encoding='utf-8') as f:
         json.dump(examples, f, ensure_ascii=False, indent=2)

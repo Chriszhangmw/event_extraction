@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: train.py
-@time: 2020/7/30 15:54
-"""
+
 import os
 import logging
 from torch.utils.data import DataLoader
@@ -21,21 +13,12 @@ from src_final.utils.functions_utils import set_seed, get_model_path_list, load_
     prepare_info, prepare_para_dict
 
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    level=logging.INFO
-)
-
 
 def train_base(opt, info_dict, train_examples, dev_info=None):
     feature_para, dataset_para, model_para = prepare_para_dict(opt, info_dict)
 
     train_features = convert_examples_to_features(opt.task_type, train_examples, opt.bert_dir,
                                                   opt.max_seq_len, **feature_para)
-
-    logger.info(f'Build {len(train_features)} train features')
 
     train_dataset = build_dataset(opt.task_type, train_features, 'train', **dataset_para)
 
@@ -48,14 +31,9 @@ def train_base(opt, info_dict, train_examples, dev_info=None):
 
         dev_features = convert_examples_to_features(opt.task_type, dev_examples, opt.bert_dir,
                                                     opt.max_seq_len, **feature_para)
-
-        logger.info(f'Build {len(dev_features)} dev features')
-
         dev_dataset = build_dataset(opt.task_type, dev_features, 'dev', **dataset_para)
-
         dev_loader = DataLoader(dev_dataset, batch_size=opt.eval_batch_size,
                                 shuffle=False, num_workers=8)
-
         dev_info = (dev_loader, dev_callback_info)
 
         model_path_list = get_model_path_list(opt.output_dir)
@@ -89,8 +67,6 @@ def train_base(opt, info_dict, train_examples, dev_info=None):
                                                                 polarity2id=info_dict['polarity2id'],
                                                                 tense2id=info_dict['tense2id'])
 
-            logger.info(f'In step {tmp_step}: {tmp_metric_str}')
-
             metric_str += f'In step {tmp_step}: {tmp_metric_str}' + '\n\n'
 
             if tmp_f1 > max_f1:
@@ -98,8 +74,6 @@ def train_base(opt, info_dict, train_examples, dev_info=None):
                 max_f1_step = tmp_step
 
         max_metric_str = f'Max f1 is: {max_f1}, in step {max_f1_step}'
-
-        logger.info(max_metric_str)
 
         metric_str += max_metric_str + '\n'
 
@@ -130,7 +104,6 @@ def training(opt):
 
         # sub & obj 用第二部分数据进行增强
         if opt.task_type == 'role1':
-            logger.info('Using second data to enhance subject and object')
             train_aux_raw_examples = processor.read_json(os.path.join(opt.aux_data_dir, f'{opt.task_type}_second.json'))
             train_examples += processor.get_train_examples(train_aux_raw_examples)
         # time & loc 用初赛全部数据进行增强
@@ -139,7 +112,7 @@ def training(opt):
             train_examples += processor.get_train_examples(train_aux_raw_examples)
         # trigger 用更正的第三部分数据进行增强
         else:
-            logger.info('Use third data to enhance trigger')
+
             train_aux_raw_examples = processor.read_json(os.path.join(opt.aux_data_dir,
                                                                       f'{opt.task_type}_third_new.json'))
             train_examples += processor.get_train_examples(train_aux_raw_examples)
@@ -156,7 +129,6 @@ def stacking(opt):
     """
     10 折交叉验证
     """
-    logger.info('Start to KFold stack attribution model')
     processor = AttributionProcessor()
 
     info_dict = prepare_info(opt.task_type, opt.mid_data_dir)
@@ -168,7 +140,6 @@ def stacking(opt):
     base_output_dir = opt.output_dir
 
     for i, (train_ids, dev_ids) in enumerate(kf.split(stack_raw_examples)):
-        logger.info(f'Start to train the {i} fold')
 
         train_raw_examples = [stack_raw_examples[_idx] for _idx in train_ids]
         train_examples = processor.get_train_examples(train_raw_examples)
@@ -196,11 +167,9 @@ if __name__ == '__main__':
 
     if args.task_type == 'trigger':
         if args.use_distant_trigger:
-            logger.info('Use distant trigger in trigger detection')
             args.output_dir += '_distant_trigger'
     elif args.task_type in ['role1', 'role2']:
         if args.use_trigger_distance:
-            logger.info('Use trigger distance in role detection')
             args.output_dir += '_distance'
 
     if args.attack_train != '':
@@ -210,7 +179,6 @@ if __name__ == '__main__':
         args.output_dir += '_wd'
 
     if args.enhance_data and args.task_type in ['trigger', 'role1', 'role2']:
-        logger.info('Enhance data')
         args.output_dir += '_enhanced'
 
     if not os.path.exists(args.output_dir):

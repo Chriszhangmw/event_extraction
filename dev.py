@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: dev.py
-@time: 2020/7/30 16:22
-"""
+
 import os
 import logging
 from torch.utils.data import DataLoader
@@ -18,12 +10,7 @@ from src_final.utils.evaluator import trigger_evaluation, role1_evaluation, role
 from src_final.utils.functions_utils import get_model_path_list, load_model_and_parallel, \
     prepare_info, prepare_para_dict
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    level=logging.INFO
-)
+
 
 
 def evaluate(opt):
@@ -44,8 +31,6 @@ def evaluate(opt):
 
     dev_features = convert_examples_to_features(opt.task_type, dev_examples, opt.bert_dir,
                                                 opt.max_seq_len, **feature_para)
-
-    logger.info(f'Build {len(dev_features)} dev features')
 
     dev_dataset = build_dataset(opt.task_type, dev_features,
                                 mode='dev', **dataset_para)
@@ -88,8 +73,6 @@ def evaluate(opt):
                                                             polarity2id=info_dict['polarity2id'],
                                                             tense2id=info_dict['tense2id'])
 
-        logger.info(f'In step {tmp_step}:\n{tmp_metric_str}')
-
         metric_str += f'In step {tmp_step}:\n{tmp_metric_str}\n\n'
 
         if tmp_f1 > max_f1:
@@ -97,8 +80,6 @@ def evaluate(opt):
             max_f1_step = tmp_step
 
     max_metric_str = f'Max f1 is: {max_f1}, in step {max_f1_step}\n'
-
-    logger.info(max_metric_str)
 
     metric_str += max_metric_str + '\n'
 

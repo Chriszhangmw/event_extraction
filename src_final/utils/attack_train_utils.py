@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: attack_train_utils.py
-@time: 2020/9/3 11:19
-"""
+
 import torch
 import torch.nn as nn
 

@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: model_utils.py
-@time: 2020/9/1 16:19
-"""
+
 import os
 import torch
 import torch.nn as nn

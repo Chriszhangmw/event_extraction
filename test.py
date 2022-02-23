@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: test.py
-@time: 2020/7/30 16:23
-"""
+
 import os
 import copy
 import json
@@ -24,12 +16,6 @@ from src_final.utils.evaluator import pointer_trigger_decode, pointer_decode, cr
 from src_final.utils.model_utils import TriggerExtractor, Role2Extractor, Role1Extractor, AttributionClassifier
 
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    level=logging.INFO
-)
 
 
 def pipeline_predict(opt):
@@ -57,7 +43,7 @@ def pipeline_predict(opt):
 
     attribution_model = AttributionClassifier(bert_dir=opt.bert_dir)
 
-    logger.info('Load models')
+
     trigger_model, device = load_model_and_parallel(trigger_model, opt.gpu_ids[0],
                                                     ckpt_path=os.path.join(opt.trigger_ckpt_dir, 'model.pt'))
 
@@ -264,25 +250,20 @@ def pipeline_predict(opt):
     with open(os.path.join(opt.submit_dir, f'submit_{opt.version}.json'), 'w', encoding='utf-8') as f:
         json.dump(submit, f, ensure_ascii=False, indent=2)
 
-    logger.info(f'{counts} blank examples')
+
 
 
 if __name__ == '__main__':
     args = TestArgs().get_parser()
 
     if '_distant_trigger' in args.trigger_ckpt_dir:
-        logger.info('Use distant trigger in trigger extractor')
         args.use_distant_trigger = True
 
     if '_distance' in args.role1_ckpt_dir:
-        logger.info('Use trigger distance in sub & obj extractor')
         args.role1_use_trigger_distance = True
 
     if '_distance' in args.role2_ckpt_dir:
-        logger.info('Use trigger distance in time & loc extractor')
         args.role2_use_trigger_distance = True
-
-    logger.info(f'Submit version: {args.version}')
 
     # 获取单模型结果
     pipeline_predict(args)

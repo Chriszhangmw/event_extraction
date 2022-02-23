@@ -1,12 +1,4 @@
-# coding=utf-8
-"""
-@author: Oscar
-@license: (C) Copyright 2019-2022, ZJU.
-@contact: 499616042@qq.com
-@software: pycharm
-@file: options.py
-@time: 2020/9/3 11:14
-"""
+
 import argparse
 
 
@@ -19,26 +11,26 @@ class BaseArgs:
     @staticmethod
     def initialize(parser: argparse.ArgumentParser):
         # args for path
-        parser.add_argument('--raw_data_dir', default='',
+        parser.add_argument('--raw_data_dir', default='/home/zmw/projects/event_extraction/data/final/raw_data',
                             help='the data dir of raw data')
 
-        parser.add_argument('--mid_data_dir', default='',
+        parser.add_argument('--mid_data_dir', default='/home/zmw/projects/event_extraction/data/final/mid_data',
                             help='the mid data dir')
 
-        parser.add_argument('--aux_data_dir', default='',
+        parser.add_argument('--aux_data_dir', default='/home/zmw/projects/event_extraction/data/final/preliminary_clean',
                             help='preliminary train data dir')
 
         parser.add_argument('--output_dir', default='./out/',
                             help='the output dir for model checkpoints')
 
-        parser.add_argument('--bert_dir', default='../bert/torch_roberta_wwm',
+        parser.add_argument('--bert_dir', default='/home/zmw/big_space/zhangmeiwei_space/pre_models/pytorch/chinese_roberta_wwm_ext_pytorch',
                             help='bert dir for ernie / roberta-wwm / uer / semi-bert')
 
         parser.add_argument('--bert_type', default='roberta_wwm',
                             help='roberta_wwm / ernie_1 / uer_large for bert')
 
         # other args
-        parser.add_argument('--gpu_ids', type=str, default='0',
+        parser.add_argument('--gpu_ids', type=str, default='3',
                             help='gpu ids to use, -1 for cpu, "1, 3" for multi gpu')
 
         parser.add_argument('--mode', type=str, default='train',
@@ -57,13 +49,13 @@ class BaseArgs:
                             help='the epoch when swa start')
 
         # module change
-        parser.add_argument('--use_distant_trigger', default=False, action='store_true',
+        parser.add_argument('--use_distant_trigger', default=True, action='store_true',
                             help='whether to use distant trigger information')
 
-        parser.add_argument('--use_trigger_distance', default=False, action='store_true',
+        parser.add_argument('--use_trigger_distance', default=True, action='store_true',
                             help='whether to use the distance between trigger and other words')
 
-        parser.add_argument('--enhance_data', default=False, action='store_true')
+        parser.add_argument('--enhance_data', default=True, action='store_true')
 
         parser.add_argument('--start_threshold', default=0.5, type=float,
                             help='threshold of entity start when decoding')
@@ -104,15 +96,11 @@ class TrainArgs(BaseArgs):
         parser.add_argument('--weight_decay', default=0., type=float)
 
         parser.add_argument('--adam_epsilon', default=1e-8, type=float)
-
         parser.add_argument('--train_batch_size', default=64, type=int)
-
         parser.add_argument('--eval_model', default=False, action='store_true',
                             help='whether to eval model after training')
-
         parser.add_argument('--attack_train', default='', type=str,
                             help='fgm / pgd attack train when training')
-
         return parser
 
 

@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[23]:
-
-
-import os
-import logging
 from torch.utils.data import DataLoader
 from src_final.preprocess.processor import *
 from src_final.utils.options import DevArgs
@@ -16,18 +8,6 @@ from src_final.preprocess.convert_raw_data import *
 import pickle as pk
 from src_final.utils.functions_utils import *
 import json
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
-    datefmt="%m/%d/%Y %H:%M:%S",
-    level=logging.INFO
-)
-
-
-# In[2]:
-
-
-# In[18]:
 
 
 def trigger_evaluation_v1(model, dev_info, device, **kwargs):
@@ -210,7 +190,7 @@ def attribution_evaluation(model, dev_info, device, **kwargs):
 
     instances = []
 
-    for tmp_pred_tense, tmp_pred_polarity, tmp_callback in             zip(tense_logits, polarity_logits, dev_callback_info):
+    for tmp_pred_tense, tmp_pred_polarity, tmp_callback in zip(tense_logits, polarity_logits, dev_callback_info):
         text, trigger, gt_attributions = tmp_callback
 
         pred_polarity = id2polarity[np.argmax(tmp_pred_polarity)]
@@ -353,8 +333,6 @@ def evaluate(opt,dev_file='dev.json',force_one=True,model_name=None,dev_raw_exam
             max_f1_step = tmp_step
 
     max_metric_str = f'Max f1 is: {max_f1}, in step {max_f1_step}\n'
-
-    logger.info(max_metric_str)
 
     metric_str += max_metric_str + '\n'
 
