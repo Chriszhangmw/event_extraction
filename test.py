@@ -92,7 +92,7 @@ def pipeline_predict(opt):
 
             trigger_encode_dict = tokenizer.encode_plus(text=tmp_text_tokens,
                                                         max_length=512,
-                                                        pad_to_max_length=False,
+                                                        padding=False,
                                                         is_pretokenized=True,
                                                         return_token_type_ids=True,
                                                         return_attention_mask=True,

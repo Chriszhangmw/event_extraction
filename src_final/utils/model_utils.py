@@ -2,7 +2,7 @@
 import os
 import torch
 import torch.nn as nn
-from torchcrf import CRF
+from TorchCRF import CRF
 from transformers import BertModel
 
 
@@ -58,6 +58,7 @@ class BaseModel(nn.Module):
                  dropout_prob=0.1):
         super(BaseModel, self).__init__()
         config_path = os.path.join(bert_dir, 'config.json')
+        print('config_path::::::::::',config_path)
 
         assert os.path.exists(bert_dir) and os.path.exists(config_path), \
             'pretrained bert file does not exist'

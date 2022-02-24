@@ -20,7 +20,7 @@ class BaseArgs:
         parser.add_argument('--aux_data_dir', default='/home/zmw/projects/event_extraction/data/final/preliminary_clean',
                             help='preliminary train data dir')
 
-        parser.add_argument('--output_dir', default='./out/',
+        parser.add_argument('--output_dir', default='/home/zmw/big_space/zhangmeiwei_space/nlp_out/event_extraction/',
                             help='the output dir for model checkpoints')
 
         parser.add_argument('--bert_dir', default='/home/zmw/big_space/zhangmeiwei_space/pre_models/pytorch/chinese_roberta_wwm_ext_pytorch',
@@ -30,20 +30,20 @@ class BaseArgs:
                             help='roberta_wwm / ernie_1 / uer_large for bert')
 
         # other args
-        parser.add_argument('--gpu_ids', type=str, default='3',
+        parser.add_argument('--gpu_ids', type=str, default='3,4',
                             help='gpu ids to use, -1 for cpu, "1, 3" for multi gpu')
 
         parser.add_argument('--mode', type=str, default='train',
                             help='train / test / stack (train / dev)')
 
-        parser.add_argument('--task_type', type=str, default='trigger',
+        parser.add_argument('--task_type', type=str, default='role1',
                             help='trigger / role1 & role2 / attribution task for event extraction')
 
         # args used for train / dev
 
         parser.add_argument('--max_seq_len', default=256, type=int)
 
-        parser.add_argument('--eval_batch_size', default=64, type=int)
+        parser.add_argument('--eval_batch_size', default=16, type=int)
 
         parser.add_argument('--swa_start', default=1, type=int,
                             help='the epoch when swa start')
@@ -96,10 +96,10 @@ class TrainArgs(BaseArgs):
         parser.add_argument('--weight_decay', default=0., type=float)
 
         parser.add_argument('--adam_epsilon', default=1e-8, type=float)
-        parser.add_argument('--train_batch_size', default=64, type=int)
-        parser.add_argument('--eval_model', default=False, action='store_true',
+        parser.add_argument('--train_batch_size', default=16, type=int)
+        parser.add_argument('--eval_model', default=True, action='store_true',
                             help='whether to eval model after training')
-        parser.add_argument('--attack_train', default='', type=str,
+        parser.add_argument('--attack_train', default='pgd', type=str,
                             help='fgm / pgd attack train when training')
         return parser
 

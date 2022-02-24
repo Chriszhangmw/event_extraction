@@ -43,6 +43,9 @@ class TriggerDataset(BaseDataset):
         if self.labels is not None:
             data['labels'] = self.labels[index]
 
+        # normalize length
+
+
         return data
 
 

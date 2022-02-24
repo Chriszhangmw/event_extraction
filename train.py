@@ -125,42 +125,15 @@ def training(opt):
     train_base(opt, info_dict, train_examples, dev_info)
 
 
-def stacking(opt):
-    """
-    10 折交叉验证
-    """
-    processor = AttributionProcessor()
-
-    info_dict = prepare_info(opt.task_type, opt.mid_data_dir)
-
-    kf = KFold(10, shuffle=True, random_state=789)
-
-    stack_raw_examples = processor.read_json(os.path.join(opt.raw_data_dir, 'stack.json'))
-
-    base_output_dir = opt.output_dir
-
-    for i, (train_ids, dev_ids) in enumerate(kf.split(stack_raw_examples)):
-
-        train_raw_examples = [stack_raw_examples[_idx] for _idx in train_ids]
-        train_examples = processor.get_train_examples(train_raw_examples)
-
-        dev_raw_examples = [stack_raw_examples[_idx] for _idx in dev_ids]
-        dev_info = processor.get_dev_examples(dev_raw_examples)
-
-        tmp_output_dir = os.path.join(base_output_dir, f'v{i}')
-
-        opt.output_dir = tmp_output_dir
-
-        train_base(opt, info_dict, train_examples, dev_info)
 
 
 if __name__ == '__main__':
     args = TrainArgs().get_parser()
 
-    assert args.mode in ['train', 'stack'], 'mode mismatch'
+    assert args.mode in ['train'], 'mode mismatch'
     assert args.task_type in ['trigger', 'role1', 'role2', 'attribution'], 'task mismatch'
 
-    mode = 'stack' if args.mode == 'stack' else 'final'
+    mode =  'final'
     args.output_dir = os.path.join(args.output_dir, mode, args.task_type, args.bert_type)
 
     set_seed(seed=123)
@@ -184,8 +157,5 @@ if __name__ == '__main__':
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir, exist_ok=True)
 
-    if args.mode == 'stack':
-        assert args.task_type in ['attribution'], 'Only support attribution task to stack'
-        stacking(args)
-    else:
-        training(args)
+
+    training(args)

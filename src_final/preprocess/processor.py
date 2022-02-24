@@ -6,7 +6,6 @@ from tqdm import tqdm
 from transformers import BertTokenizer
 
 
-logger = logging.getLogger(__name__)
 
 
 __all__ = ['TriggerProcessor', 'RoleProcessor', 'AttributionProcessor', 'ROLE2_TO_ID',
@@ -359,7 +358,8 @@ def convert_trigger_example(ex_idx, example: TriggerExample, max_seq_len, tokeni
 
     encode_dict = tokenizer.encode_plus(text=tokens,
                                         max_length=max_seq_len,
-                                        pad_to_max_length=True,
+                                        truncation = True,
+                                        padding='max_length',
                                         is_pretokenized=True,
                                         return_token_type_ids=True,
                                         return_attention_mask=True)
@@ -369,12 +369,12 @@ def convert_trigger_example(ex_idx, example: TriggerExample, max_seq_len, tokeni
     token_type_ids = encode_dict['token_type_ids']
 
     if ex_idx < 3 and set_type == 'train':
-        logger.info(f"*** {set_type}_example-{ex_idx} ***")
-        logger.info(f'text: {" ".join(tokens)}')
-        logger.info(f"token_ids: {token_ids}")
-        logger.info(f"attention_masks: {attention_masks}")
-        logger.info(f"token_type_ids: {token_type_ids}")
-        logger.info(f'distant trigger: {distant_trigger_label}')
+        print(f"*** {set_type}_example-{ex_idx} ***")
+        print(f'text: {" ".join(tokens)}')
+        print(f"token_ids: {token_ids}")
+        print(f"attention_masks: {attention_masks}")
+        print(f"token_type_ids: {token_type_ids}")
+        print(f'distant trigger: {distant_trigger_label}')
 
     feature = TriggerFeature(token_ids=token_ids,
                              attention_masks=attention_masks,
@@ -395,7 +395,7 @@ def convert_role1_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
     trigger_loc = example.trigger_location
 
     if set_type == 'train' and trigger_loc[0] > max_seq_len:
-        logger.info('Skip this example where the tag is longer than max sequence length')
+        print('Skip this example where the tag is longer than max sequence length')
         return None
 
     tokens = fine_grade_tokenize(raw_text, tokenizer)
@@ -455,7 +455,8 @@ def convert_role1_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
 
     encode_dict = tokenizer.encode_plus(text=tokens,
                                         max_length=max_seq_len,
-                                        pad_to_max_length=True,
+                                        truncation=True,
+                                        padding='max_length',
                                         is_pretokenized=True,
                                         return_token_type_ids=True,
                                         return_attention_mask=True)
@@ -468,12 +469,12 @@ def convert_role1_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
         token_type_ids[i] = 1
 
     if ex_idx < 3 and set_type == 'train':
-        logger.info(f"*** {set_type}_example-{ex_idx} ***")
-        logger.info(f'text: {" ".join(tokens)}')
-        logger.info(f"token_ids: {token_ids}")
-        logger.info(f"attention_masks: {attention_masks}")
-        logger.info(f"token_type_ids: {token_type_ids}")
-        logger.info(f'trigger location: {trigger_loc}')
+        print(f"*** {set_type}_example-{ex_idx} ***")
+        print(f'text: {" ".join(tokens)}')
+        print(f"token_ids: {token_ids}")
+        print(f"attention_masks: {attention_masks}")
+        print(f"token_type_ids: {token_type_ids}")
+        print(f'trigger location: {trigger_loc}')
 
     feature = RoleFeature(token_ids=token_ids,
                           attention_masks=attention_masks,
@@ -495,7 +496,7 @@ def convert_role2_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
     trigger_loc = example.trigger_location
 
     if trigger_loc[0] > max_seq_len:
-        logger.info('Skip this example where the tag is longer than max sequence length')
+        print('Skip this example where the tag is longer than max sequence length')
         return None
 
     tokens = fine_grade_tokenize(raw_text, tokenizer)
@@ -553,7 +554,8 @@ def convert_role2_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
 
     encode_dict = tokenizer.encode_plus(text=tokens,
                                         max_length=max_seq_len,
-                                        pad_to_max_length=True,
+                                        truncation=True,
+                                        padding='max_length',
                                         is_pretokenized=True,
                                         return_token_type_ids=True,
                                         return_attention_mask=True)
@@ -566,10 +568,10 @@ def convert_role2_example(ex_idx, example: RoleExample, max_seq_len, tokenizer: 
         token_type_ids[i] = 1
 
     if ex_idx < 3 and set_type == 'train':
-        logger.info(f"*** {set_type}_example-{ex_idx} ***")
-        logger.info(f'text: {" ".join(tokens)}')
-        logger.info(f'trigger location: {trigger_loc}')
-        logger.info(f'labels: {labels}')
+        print(f"*** {set_type}_example-{ex_idx} ***")
+        print(f'text: {" ".join(tokens)}')
+        print(f'trigger location: {trigger_loc}')
+        print(f'labels: {labels}')
 
     feature = RoleFeature(token_ids=token_ids,
                           attention_masks=attention_masks,
@@ -599,7 +601,8 @@ def convert_attribution_example(ex_idx, example: AttributionExample, max_seq_len
 
     encode_dict = tokenizer.encode_plus(text=tokens,
                                         max_length=max_seq_len,
-                                        pad_to_max_length=True,
+                                        truncation=True,
+                                        padding='max_length',
                                         is_pretokenized=True,
                                         return_token_type_ids=True,
                                         return_attention_mask=True)
@@ -621,13 +624,13 @@ def convert_attribution_example(ex_idx, example: AttributionExample, max_seq_len
         pooling_masks[i] = 0
 
     if ex_idx < 3 and set_type == 'train':
-        logger.info(f"*** {set_type}_example-{ex_idx} ***")
-        logger.info(f'text: {" ".join(tokens)}')
-        logger.info(f"token_ids: {token_ids}")
-        logger.info(f"attention_masks: {attention_masks}")
-        logger.info(f"token_type_ids: {token_type_ids}")
-        logger.info(f'trigger loc: {trigger_loc}')
-        logger.info(f'labels: {labels}')
+        print(f"*** {set_type}_example-{ex_idx} ***")
+        print(f'text: {" ".join(tokens)}')
+        print(f"token_ids: {token_ids}")
+        print(f"attention_masks: {attention_masks}")
+        print(f"token_type_ids: {token_type_ids}")
+        print(f'trigger loc: {trigger_loc}')
+        print(f'labels: {labels}')
 
     feature = AttributionFeature(token_ids=token_ids,
                                  attention_masks=attention_masks,
@@ -643,7 +646,7 @@ def convert_examples_to_features(task_type, examples, bert_dir, max_seq_len, **k
     assert task_type in ['trigger', 'role1', 'role2', 'attribution']
 
     tokenizer = BertTokenizer.from_pretrained(bert_dir)
-    logger.info(f'Vocab nums in this tokenizer is: {tokenizer.vocab_size}')
+    print(f'Vocab nums in this tokenizer is: {tokenizer.vocab_size}')
 
     features = []
 

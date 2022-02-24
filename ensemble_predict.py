@@ -32,7 +32,7 @@ def base_attribution_predict(examples, model, device, tokenizer, desc):
 
         encode_dict = tokenizer.encode_plus(text=tokens,
                                             max_length=512,
-                                            pad_to_max_length=False,
+                                            padding=False,
                                             is_pretokenized=True,
                                             return_token_type_ids=True,
                                             return_attention_mask=True,

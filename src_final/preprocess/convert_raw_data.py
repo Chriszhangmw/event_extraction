@@ -312,7 +312,7 @@ def split_preliminary_trigger_third_data(bert_dir, base_dir, ckpt_path):
 
             trigger_encode_dict = tokenizer.encode_plus(text=text_tokens,
                                                         max_length=512,
-                                                        pad_to_max_length=False,
+                                                        padding=False,
                                                         is_pretokenized=True,
                                                         return_token_type_ids=True,
                                                         return_attention_mask=True,
@@ -469,12 +469,12 @@ def split_preliminary_role_data(base_dir, save_dir):
 
 
 if __name__ == '__main__':
-    convert_raw_data('../../data/final', save_data=True, save_dict=False)
-    split_preliminary_trigger_data('../../data/final/raw_data', '../../data/final/preliminary_clean')
-    split_preliminary_role_data('../../data/final/raw_data', '../../data/final/preliminary_clean')
+    # convert_raw_data('../../data/final', save_data=True, save_dict=False)
+    # split_preliminary_trigger_data('../../data/final/raw_data', '../../data/final/preliminary_clean')
+    # split_preliminary_role_data('../../data/final/raw_data', '../../data/final/preliminary_clean')
 
     # # 划分 trigger_third_new 需要用复赛的数据集训练出一个 trigger 模型 (只给出划分好的 trigger third)
-    # split_preliminary_trigger_third_data(bert_dir='../../../bert/torch_roberta_wwm',
-    #                                      base_dir='../../data/final/preliminary_clean',
-    #                                      ckpt_path='')
+    split_preliminary_trigger_third_data(bert_dir='../../../bert/torch_roberta_wwm',
+                                         base_dir='../../data/final/preliminary_clean',
+                                         ckpt_path='')
 
